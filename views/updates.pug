@@ -1,1 +1,19 @@
+doctype html
+html
+  head
+    title Add Contact
+  body
+    h1= title
+    form(action="/update-contact" method="POST")
+      label First Name:
+      input(type="text" name="firstname")
+      br
+      label Last Name:
+      input(type="text" name="lastname")
+      br
+      label Email:
+      input(type="email" name="email")
+      br
+      button(type="submit") Submit
+    a(href="/") Return to homepage
 
