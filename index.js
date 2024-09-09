@@ -16,15 +16,16 @@ const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_TOKEN;
 app.get('/', async (req, res) => {
     const contactsUrl = 'https://api.hubapi.com/crm/v3/objects/contacts';
     const headers = {
-        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+        Authorization: `Bearer ${process.env.PRIVATE_APP_TOKEN}`,
         'Content-Type': 'application/json'
     };
 
     try {
+        // Fetch the contacts data
         const response = await axios.get(contactsUrl, { headers });
         const data = response.data.results;
 
-        // Render the homepage with the contacts data
+        // Render the homepage and pass the contacts data
         res.render('homepage', { title: 'Contacts', data });
     } catch (error) {
         console.error('Error fetching contact data:', error);
@@ -36,7 +37,7 @@ app.get('/', async (req, res) => {
 
 // * Code for Route 2 goes here
 app.get('/update-contact', (req, res) => {
-    res.render('updates', { title: 'Update Contact Form' });
+    res.render('updates', { title: 'Add a New Contact' });
 });
 
 // TODO: ROUTE 3 - Create a new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
@@ -47,11 +48,12 @@ app.post('/update-contact', async (req, res) => {
     const contactsUrl = 'https://api.hubapi.com/crm/v3/objects/contacts';
 
     const headers = {
-        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
+        Authorization: `Bearer ${process.env.PRIVATE_APP_TOKEN}`,
         'Content-Type': 'application/json'
     };
 
     try {
+        // Send a POST request to create a new contact
         await axios.post(contactsUrl, {
             properties: {
                 firstname,
@@ -60,13 +62,14 @@ app.post('/update-contact', async (req, res) => {
             }
         }, { headers });
 
-        // Redirect back to the homepage after creating the contact
+        // Redirect to the homepage after creating the contact
         res.redirect('/');
     } catch (error) {
         console.error('Error creating contact:', error);
         res.status(500).send('Error creating contact');
     }
 });
+
 
 /** 
 * * This is sample code to give you a reference for how you should structure your calls. 
