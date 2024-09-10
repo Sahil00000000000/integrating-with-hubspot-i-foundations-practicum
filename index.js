@@ -19,26 +19,30 @@ const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_TOKEN;
 app.get('/', async (req, res) => {
     const contactsUrl = 'https://api.hubapi.com/crm/v3/objects/contacts';
     const headers = {
-        Authorization: `Bearer ${process.env.PRIVATE_APP_TOKEN}`,
+        Authorization: `Bearer ${process.env.PRIVATE_APP_TOKEN}`, // Make sure this is being loaded
         'Content-Type': 'application/json'
     };
 
-    try {
-        // Fetch the contacts data
-        const response = await axios.get(contactsUrl, { headers });
+    console.log('Using PRIVATE_APP_TOKEN:', process.env.PRIVATE_APP_TOKEN); // Check if token is loaded
 
-        // Log the full API response to the console
-        console.log(response.data);
+    try {
+        // API call to HubSpot to fetch contacts
+        const response = await axios.get(contactsUrl, { headers });
+        
+        // Log the API response
+        console.log('API Response:', response.data);
 
         const data = response.data.results;
 
-        // Render the homepage and pass the contacts data
+        // Render the homepage with the contact data
         res.render('homepage', { title: 'Contacts', data });
     } catch (error) {
-        console.error('Error fetching contact data:', error);
+        // Log the error if API call fails
+        console.error('Error fetching contact data:', error.response ? error.response.data : error.message);
         res.status(500).send('Error fetching data');
     }
 });
+
 
 
 // TODO: ROUTE 2 - Create a new app.get route for the form to create or update new custom object data. Send this data along in the next route.
