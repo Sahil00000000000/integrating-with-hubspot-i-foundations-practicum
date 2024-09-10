@@ -19,16 +19,23 @@ const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_TOKEN;
 const express = require('express');
 const app = express();
 
+// Set Pug as the view engine
 app.set('view engine', 'pug');
+
+// Serve static files from the 'public' folder
 app.use(express.static(__dirname + '/public'));
 
-// Test homepage route to render 'homepage.pug'
+// Root route ("/") rendering the 'homepage.pug' template
 app.get('/', (req, res) => {
-    res.render('homepage');  // Render the Pug template
+    res.render('homepage');  // Make sure homepage.pug exists in views folder
 });
 
-// Localhost listener
-app.listen(3000, () => console.log('Listening on http://localhost:3000'));
+// Start the server on port 3000
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
+});
+
+
 
 
 
