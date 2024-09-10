@@ -23,6 +23,10 @@ app.get('/', async (req, res) => {
     try {
         // Fetch the contacts data
         const response = await axios.get(contactsUrl, { headers });
+
+        // Log the full API response to the console
+        console.log(response.data);
+
         const data = response.data.results;
 
         // Render the homepage and pass the contacts data
@@ -32,6 +36,7 @@ app.get('/', async (req, res) => {
         res.status(500).send('Error fetching data');
     }
 });
+
 
 // TODO: ROUTE 2 - Create a new app.get route for the form to create or update new custom object data. Send this data along in the next route.
 
