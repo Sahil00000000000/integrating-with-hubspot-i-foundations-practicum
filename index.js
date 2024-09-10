@@ -8,56 +8,33 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 require('dotenv').config();
 
-
-
-// * Please DO NOT INCLUDE the private app access token in your repo. Don't do this practicum in your normal account.
+// HubSpot private app token
 const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_TOKEN;
 
-// TODO: ROUTE 1 - Create a new app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
-
-// * Code for Route 1 goes here
+// Route 1: Get contacts and render homepage
 app.get('/', async (req, res) => {
     const contactsUrl = 'https://api.hubapi.com/crm/v3/objects/contacts';
     const headers = {
-        Authorization: `Bearer ${process.env.PRIVATE_APP_TOKEN}`, // Make sure this is being loaded
+        Authorization: `Bearer ${process.env.PRIVATE_APP_TOKEN}`,
         'Content-Type': 'application/json'
     };
 
-    console.log('Using PRIVATE_APP_TOKEN:', process.env.PRIVATE_APP_TOKEN); // Check if token is loaded
-
     try {
-        // API call to HubSpot to fetch contacts
         const response = await axios.get(contactsUrl, { headers });
-        
-        // Log the API response
-        console.log('API Response:', response.data);
-
         const data = response.data.results;
-
-        // Render the homepage with the contact data
         res.render('homepage', { title: 'Contacts', data });
     } catch (error) {
-        // Log the error if API call fails
-        console.error('Error fetching contact data:', error.response ? error.response.data : error.message);
+        console.error('Error fetching contact data:', error);
         res.status(500).send('Error fetching data');
     }
 });
 
-
-
-
-
-
-// TODO: ROUTE 2 - Create a new app.get route for the form to create or update new custom object data. Send this data along in the next route.
-
-// * Code for Route 2 goes here
+// Route 2: Render form to create new contact
 app.get('/update-contact', (req, res) => {
     res.render('updates', { title: 'Add a New Contact' });
 });
 
-// TODO: ROUTE 3 - Create a new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
-
-// * Code for Route 3 goes here
+// Route 3: Handle POST request to create new contact
 app.post('/update-contact', async (req, res) => {
     const { firstname, lastname, email } = req.body;
     const contactsUrl = 'https://api.hubapi.com/crm/v3/objects/contacts';
@@ -68,7 +45,6 @@ app.post('/update-contact', async (req, res) => {
     };
 
     try {
-        // Send a POST request to create a new contact
         await axios.post(contactsUrl, {
             properties: {
                 firstname,
@@ -76,8 +52,6 @@ app.post('/update-contact', async (req, res) => {
                 email
             }
         }, { headers });
-
-        // Redirect to the homepage after creating the contact
         res.redirect('/');
     } catch (error) {
         console.error('Error creating contact:', error);
@@ -85,31 +59,9 @@ app.post('/update-contact', async (req, res) => {
     }
 });
 
+// Start server on port 3000
+app.listen(3000, () => console.log('Server running on http://localhost:3000'));
 
-/** 
-* * This is sample code to give you a reference for how you should structure your calls. 
-
-* * App.get sample
-app.get('/contacts', async (req, res) => {
-    const contacts = 'https://api.hubspot.com/crm/v3/objects/contacts';
-    const headers = {
-        Authorization: `Bearer ${PRIVATE_APP_ACCESS}`,
-        'Content-Type': 'application/json'
-    }
-    try {
-        const resp = await axios.get(contacts, { headers });
-        const data = resp.data.results;
-        res.render('contacts', { title: 'Contacts | HubSpot APIs', data });      
-    } catch (error) {
-        console.error(error);
-    }
-});
-
-* * App.post sample
-app.post('/update', async (req, res) => {
-    const update = {
-        properties: {
-            "favorite_book": req.body.newVal
         }
     }
 
