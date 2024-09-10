@@ -16,32 +16,19 @@ const PRIVATE_APP_ACCESS = process.env.PRIVATE_APP_TOKEN;
 // TODO: ROUTE 1 - Create a new app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
 
 // * Code for Route 1 goes here
-app.get('/', async (req, res) => {
-    const contactsUrl = 'https://api.hubapi.com/crm/v3/objects/contacts';
-    const headers = {
-        Authorization: `Bearer ${process.env.PRIVATE_APP_TOKEN}`, // Make sure this is being loaded
-        'Content-Type': 'application/json'
-    };
+const express = require('express');
+const app = express();
 
-    console.log('Using PRIVATE_APP_TOKEN:', process.env.PRIVATE_APP_TOKEN); // Check if token is loaded
+app.set('view engine', 'pug');
+app.use(express.static(__dirname + '/public'));
 
-    try {
-        // API call to HubSpot to fetch contacts
-        const response = await axios.get(contactsUrl, { headers });
-        
-        // Log the API response
-        console.log('API Response:', response.data);
-
-        const data = response.data.results;
-
-        // Render the homepage with the contact data
-        res.render('homepage', { title: 'Contacts', data });
-    } catch (error) {
-        // Log the error if API call fails
-        console.error('Error fetching contact data:', error.response ? error.response.data : error.message);
-        res.status(500).send('Error fetching data');
-    }
+// Test homepage route to render 'homepage.pug'
+app.get('/', (req, res) => {
+    res.render('homepage');  // Render the Pug template
 });
+
+// Localhost listener
+app.listen(3000, () => console.log('Listening on http://localhost:3000'));
 
 
 
@@ -128,5 +115,3 @@ app.post('/update', async (req, res) => {
 */
 
 
-// * Localhost
-app.listen(3000, () => console.log('Listening on http://localhost:3000'));
